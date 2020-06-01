@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="datalog_report.xsl"?>
+<report_definition xmlns:dt="urn:schemas-microsoft-com:datatypes" xml:space="preserve">
+	<name>Rigenerazioni RC-104</name>
+	<description>Rigenerazioni REC1</description>
+	<sql_command>SELECT R104.DATA, R104.ORA, R104.ADS, R104.TOLUOLO, R104.VAPORE,convert(decimal(3,2),[toluolo]/[vapore],0) AS Expr1,AIT,SAT,convert(int,M_SOLV/0.87,0) AS LT_SOLV_ACCUM ,TIME_ADS
+FROM R104
+WHERE (((R104.DATA)>=convert(varchar,'%date_from%',111) And (R104.DATA)&lt;=convert(date,'%date_to%',111)))
+	</sql_command>
+	<stylesheet_list>
+		<stylesheet>
+			<path>\StyleSheets/html_rigen_rc104.xsl</path>
+		</stylesheet>
+		<stylesheet>
+			<path>\StyleSheets/xls_conc_yesterday.xsl</path>
+		</stylesheet>
+	</stylesheet_list>
+	<parameter_list>
+		<parameter>
+			<name>date_from</name>
+			<description>Data inizio(yyyy-mm-dd):</description>
+			<default_value>SELECT convert(varchar,getdate()-1,111) as dateFrom</default_value>
+		</parameter>
+		<parameter>
+			<name>date_to</name>
+			<description>Data fine(yyyy-mm-dd):</description>
+			<default_value>SELECT convert(varchar,getdate()-1,111) as dateFrom</default_value>
+		</parameter>
+	</parameter_list>
+</report_definition>

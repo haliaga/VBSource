@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="datalog_report.xsl"?>
+<report_definition xmlns:dt="urn:schemas-microsoft-com:datatypes" xml:space="preserve">
+	<name>Allarmi camini</name>
+	<description>Temp Skymark</description>
+	<sql_command>
+        SELECT DATA, ORA, IIf([SUP_R104]=1,"Start alarm AE-220",IIf([SUP_R104]=2,"Start alarm AE-201A",IIf([SUP_R104]=3,"Start alarm AE-201B",IIf([SUP_R104]=4,"Start alarm AE-201C",IIf([SUP_R104]=5,"Start alarm AE-201D",IIf([INF_R104]=1,"End alarm AE-220",IIf([INF_R104]=2,"End alarm AE-201A",IIf([INF_R104]=3,"End alarm AE-201B",IIf([INF_R104]=4,"End alarm AE-201C",IIf([INF_R104]=5,"End alarm AE-201D","--")))))))))) AS rc_104_stat,        
+        IIf([SUP_R110]=1,"Start alarm AE-120",IIf([SUP_R110]=2,"Start alarm AE-110A",IIf([SUP_R110]=3,"Start alarm AE-110B",IIf([SUP_R110]=4,"Start alarm AE-110C",IIf([SUP_R110]=5,"Start alarm AE-110D",IIf([INF_R110]=1,"End alarm AE-120",IIf([INF_R110]=2,"End alarm AE-110A",IIf([INF_R110]=3,"End alarm AE-110B",IIf([INF_R110]=4,"End alarm AE-110C",IIf([INF_R110]=5,"End alarm AE-110D","--")))))))))) AS rc_110_stat
+        from soglie
+WHERE (DateValue(soglie.DATA)) BETWEEN DateValue("%date_from%") AND DateValue("%date_to%");
+</sql_command>
+	<stylesheet_list>
+		<stylesheet> 
+			<path>../StyleSheets/html_allarmi_analisi.xsl</path> 
+		</stylesheet> 
+	</stylesheet_list>
+        <parameter_list>
+		<parameter>
+			<name>date_from</name>
+			<description>Starting Date:</description>
+			<default_value>SELECT datevalue(now()-30) as dateFrom</default_value>
+		</parameter>
+		<parameter>
+			<name>date_to</name>
+			<description>Ending Date:</description>
+			<default_value>SELECT datevalue(now()) as dateTo</default_value>
+		</parameter>	
+	</parameter_list>
+</report_definition>

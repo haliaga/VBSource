@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="datalog_report.xsl"?>
+<report_definition xmlns:dt="urn:schemas-microsoft-com:datatypes" xml:space="preserve">
+	<name>Allarmi PROVA R-104</name>
+	<description>Allarmi Comet</description>
+	<sql_command>
+        SELECT SOGLIE_SUP.DATA, SOGLIE_SUP.ORA, SOGLIE_INF.DATA, SOGLIE_INF.ORA, IIf([SOGLIE_SUP.SUP_R104]= 1,"Alarm AE-220", "--"), IIf([SOGLIE_SUP.SUP_R104]= 2,"Alarm AE-201A", "--"), IIf([SOGLIE_SUP.SUP_R104]= 3,"Alarm AE-201B", "--"), IIf([SOGLIE_SUP.SUP_R104]= 4,"Alarm AE-201C", "--"), IIf([SOGLIE_SUP.SUP_R104]= 5,"Alarm AE-201D", "--")
+        FROM SOGLIE_SUP INNER JOIN SOGLIE_INF ON SOGLIE_SUP.SUP_R104 = SOGLIE_INF.INF_R104
+WHERE ((SOGLIE_SUP.ORA) &lt; (SOGLIE_INF.ORA));
+</sql_command>
+	<stylesheet_list>
+		<stylesheet> 
+			<path>../StyleSheets/html_allarmi_analisi_R104.xsl</path> 
+		</stylesheet> 
+	</stylesheet_list>
+        <parameter_list>
+		<parameter>
+			<name>date_from</name>
+			<description>Starting Date:</description>
+			<default_value>SELECT datevalue(now()-30) as dateFrom</default_value>
+		</parameter>
+		<parameter>
+			<name>date_to</name>
+			<description>Ending Date:</description>
+			<default_value>SELECT datevalue(now()) as dateTo</default_value>
+		</parameter>	
+	</parameter_list>
+</report_definition>

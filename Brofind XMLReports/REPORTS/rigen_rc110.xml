@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="datalog_report.xsl"?>
+<report_definition xmlns:dt="urn:schemas-microsoft-com:datatypes" xml:space="preserve">
+	<name>Rigenerazioni RC-110</name>
+	<description>Rigenerazioni RC-110</description>
+	<sql_command>SELECT R110.DATA, R110.ORA, R110.ADS, R110.TOLUOLO, R110.VAPORE,format( [toluolo]/[vapore],"0.00") AS Expr1,AIT,SAT,format( M_SOLV/0.66,"0") AS LT_SOLV_ACCUM ,TIME_ADS
+FROM R110
+WHERE (((R110.DATA)>=datevalue('%date_from%') And (R110.DATA)&lt;=datevalue('%date_to%')))
+	</sql_command>
+	<stylesheet_list>
+		<stylesheet>
+			<path>\StyleSheets/html_rigen_rc110.xsl</path>
+		</stylesheet>
+		<stylesheet>
+			<path>\StyleSheets/xls_conc_yesterday.xsl</path>
+		</stylesheet>
+	</stylesheet_list>
+	<parameter_list>
+		<parameter>
+			<name>date_from</name>
+			<description>Data inizio(yyyy-mm-dd):</description>
+			<default_value>SELECT datevalue(now()-1) as dateFrom</default_value>
+		</parameter>
+		<parameter>
+			<name>date_to</name>
+			<description>Data fine(yyyy-mm-dd):</description>
+			<default_value>SELECT datevalue(now()) as dateFrom</default_value>
+		</parameter>
+	</parameter_list>
+</report_definition>

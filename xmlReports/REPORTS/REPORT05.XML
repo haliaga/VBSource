@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="datalog_report.xsl"?>
+<report_definition xmlns:dt="urn:schemas-microsoft-com:datatypes" xml:space="preserve">
+	<name>Report Allarmi Emissioni R-110</name>
+	<description>Allarmi Comet</description>
+	<sql_command>
+        SELECT TEMP.DATA_SUP, TEMP.ORA_SUP, FIRST(TEMP.DATA_INF), FIRST(TEMP.ORA_INF), MAX(TEMP.ESP_1), MAX(TEMP.ESP_2), MAX(TEMP.ESP_3), MAX(TEMP.ESP_4), MAX(TEMP.ESP_5)
+        FROM (SELECT (SOGLIE_SUP.DATA) AS DATA_SUP, (SOGLIE_SUP.ORA) AS ORA_SUP, (SOGLIE_INF.DATA) AS DATA_INF, (SOGLIE_INF.ORA) AS ORA_INF, (IIf([SOGLIE_SUP.SUP_R110]= 1,"Alta conc.", (IIf([SOGLIE_SUP.SUP_R110]= 6,"Altissima conc.", "--")))) AS ESP_1, (IIf([SOGLIE_SUP.SUP_R110]= 2,"Alta conc.", (IIf([SOGLIE_SUP.SUP_R110]= 7,"Altissima conc.", "--")))) AS ESP_2, (IIf([SOGLIE_SUP.SUP_R110]= 3,"Alta conc.", (IIf([SOGLIE_SUP.SUP_R110]= 8,"Altissima conc.", "--")))) AS ESP_3, (IIf([SOGLIE_SUP.SUP_R110]= 4,"Alta conc.", (IIf([SOGLIE_SUP.SUP_R110]= 9,"Altissima conc.", "--")))) AS ESP_4, (IIf([SOGLIE_SUP.SUP_R110]= 5,"Alta conc.", (IIf([SOGLIE_SUP.SUP_R110]= 10,"Altissima conc.", "--")))) AS ESP_5
+        FROM SOGLIE_SUP RIGHT JOIN SOGLIE_INF ON SOGLIE_SUP.SUP_R110 = SOGLIE_INF.INF_R110
+WHERE ((DateValue(SOGLIE_SUP.DATA)) BETWEEN DateValue("%date_from%") AND DateValue("%date_to%")) AND SOGLIE_SUP.SUP_R110 > 0 AND ((SOGLIE_SUP.DATA) &lt; (SOGLIE_INF.DATA)) OR (((SOGLIE_SUP.DATA) = (SOGLIE_INF.DATA)) AND ((SOGLIE_SUP.ORA) &lt; (SOGLIE_INF.ORA)) AND SOGLIE_SUP.SUP_R110 > 0)
+ORDER BY SOGLIE_SUP.DATA, SOGLIE_SUP.ORA, SOGLIE_INF.DATA, SOGLIE_INF.ORA) AS TEMP
+WHERE (Datevalue(TEMP.DATA_SUP) BETWEEN DateValue("%date_from%") AND DateValue("%date_to%"))
+GROUP BY TEMP.DATA_SUP, TEMP.ORA_SUP;
+</sql_command>
+	<stylesheet_list>
+		<stylesheet> 
+			<path>\StyleSheets/html_allarmi_analisi_R110.xsl</path> 
+		</stylesheet> 
+	</stylesheet_list>
+        <parameter_list>
+		<parameter>
+			<name>date_from</name>
+			<description>Starting Date:</description>
+			<default_value>SELECT datevalue(now()-30) as dateFrom</default_value>
+		</parameter>
+		<parameter>
+			<name>date_to</name>
+			<description>Ending Date:</description>
+			<default_value>SELECT datevalue(now()) as dateTo</default_value>
+		</parameter>	
+	</parameter_list>
+</report_definition>

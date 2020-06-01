@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="datalog_report.xsl"?>
+<report_definition xmlns:dt="urn:schemas-microsoft-com:datatypes" xml:space="preserve">
+	<name>Report Allarmi Antincendio R-110</name>
+	<description>Allarmi Comet</description>
+	<sql_command>
+        SELECT TEMP.DATA_SUP, TEMP.ORA_SUP, FIRST(TEMP.DATA_INF), FIRST(TEMP.ORA_INF), MAX(TEMP.ESP_1), MAX(TEMP.ESP_2), MAX(TEMP.ESP_3), MAX(TEMP.ESP_4)
+        FROM (SELECT (SOGLIE2_SUP.DATA) AS DATA_SUP, (SOGLIE2_SUP.ORA) AS ORA_SUP, (SOGLIE2_INF.DATA) AS DATA_INF, (SOGLIE2_INF.ORA) AS ORA_INF, 
+
+(IIf([SOGLIE2_SUP.SUP_R110]= 1,"Alta temp.", (IIf([SOGLIE2_SUP.SUP_R110]= 2,"Altissima temp.", (IIf([SOGLIE2_SUP.SUP_R110]= 9,"Alta CO", (IIf([SOGLIE2_SUP.SUP_R110]= 10,"Altissima CO", (IIf([SOGLIE2_SUP.SUP_R110]= 17,"Alta CO2", (IIf([SOGLIE2_SUP.SUP_R110]= 18,"Altissima CO2", "--")))))))))))) AS ESP_1, 
+(IIf([SOGLIE2_SUP.SUP_R110]= 3,"Alta temp.", (IIf([SOGLIE2_SUP.SUP_R110]= 4,"Altissima temp.", (IIf([SOGLIE2_SUP.SUP_R110]= 11,"Alta CO", (IIf([SOGLIE2_SUP.SUP_R110]= 12,"Altissima CO", (IIf([SOGLIE2_SUP.SUP_R110]= 19,"Alta CO2", (IIf([SOGLIE2_SUP.SUP_R110]= 20,"Altissima CO2", "--")))))))))))) AS ESP_2, 
+(IIf([SOGLIE2_SUP.SUP_R110]= 5,"Alta temp.", (IIf([SOGLIE2_SUP.SUP_R110]= 6,"Altissima temp.", (IIf([SOGLIE2_SUP.SUP_R110]= 13,"Alta CO", (IIf([SOGLIE2_SUP.SUP_R110]= 14,"Altissima CO", (IIf([SOGLIE2_SUP.SUP_R110]= 21,"Alta CO2", (IIf([SOGLIE2_SUP.SUP_R110]= 22,"Altissima CO2", "--")))))))))))) AS ESP_3, 
+(IIf([SOGLIE2_SUP.SUP_R110]= 7,"Alta temp.", (IIf([SOGLIE2_SUP.SUP_R110]= 8,"Altissima temp.", (IIf([SOGLIE2_SUP.SUP_R110]= 15,"Alta CO", (IIf([SOGLIE2_SUP.SUP_R110]= 16,"Altissima CO", (IIf([SOGLIE2_SUP.SUP_R110]= 23,"Alta CO2", (IIf([SOGLIE2_SUP.SUP_R110]= 24,"Altissima CO2", "--")))))))))))) AS ESP_4
+
+        FROM SOGLIE2_SUP RIGHT JOIN SOGLIE2_INF ON SOGLIE2_SUP.SUP_R110 = SOGLIE2_INF.INF_R110
+WHERE ((DateValue(SOGLIE2_SUP.DATA)) BETWEEN DateValue("%date_from%") AND DateValue("%date_to%")) AND SOGLIE2_SUP.SUP_R110 > 0 AND ((SOGLIE2_SUP.DATA) &lt; (SOGLIE2_INF.DATA)) OR (((SOGLIE2_SUP.DATA) = (SOGLIE2_INF.DATA)) AND ((SOGLIE2_SUP.ORA) &lt; (SOGLIE2_INF.ORA)) AND SOGLIE2_SUP.SUP_R110 > 0)
+ORDER BY SOGLIE2_SUP.DATA, SOGLIE2_SUP.ORA, SOGLIE2_INF.DATA, SOGLIE2_INF.ORA) AS TEMP
+WHERE (Datevalue(TEMP.DATA_SUP) BETWEEN DateValue("%date_from%") AND DateValue("%date_to%"))
+GROUP BY TEMP.DATA_SUP, TEMP.ORA_SUP;
+</sql_command>
+	<stylesheet_list>
+		<stylesheet> 
+			<path>\StyleSheets/html_allarmi_antincendio_R110.xsl</path> 
+		</stylesheet> 
+	</stylesheet_list>
+        <parameter_list>
+		<parameter>
+			<name>date_from</name>
+			<description>Starting Date:</description>
+			<default_value>SELECT datevalue(now()-30) as dateFrom</default_value>
+		</parameter>
+		<parameter>
+			<name>date_to</name>
+			<description>Ending Date:</description>
+			<default_value>SELECT datevalue(now()) as dateTo</default_value>
+		</parameter>	
+	</parameter_list>
+</report_definition>

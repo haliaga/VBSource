@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="datalog_report.xsl"?>
+<report_definition xmlns:dt="urn:schemas-microsoft-com:datatypes" xml:space="preserve">
+	<name>Consumi e solvente recuperato</name>
+	<description>Rigenerazioni REC1</description>
+	<sql_command>SELECT 
+						(SELECT OPCValuesTags.TagValue
+						FROM OPCValuesTags
+						WHERE (((OPCValuesTags.TagID)=4) AND ((OPCValuesTags.TagTimeStamp)=datevalue('%dateFrom%')) AND ((OPCValuesTags.Quality)=192))) AS solv_rec1_ini, 
+						OPCValuesTagsFine.TagValue-solv_rec1_ini AS solv_rec1_dif, 
+						(SELECT OPCValuesTags.TagValue
+						FROM OPCValuesTags
+						WHERE (((OPCValuesTags.TagID)=5) AND ((OPCValuesTags.TagTimeStamp)=datevalue('%dateFrom%')) AND ((OPCValuesTags.Quality)=192))) AS solv_rec3_ini, 
+						(SELECT OPCValuesTags.TagValue
+						FROM OPCValuesTags
+						WHERE (((OPCValuesTags.TagID)=5) AND ((OPCValuesTags.TagTimeStamp)=datevalue('%dateTo%')) AND ((OPCValuesTags.Quality)=192))) AS solv_rec3_end, 
+						(solv_rec3_end-solv_rec3_ini) AS solv_rec3_dif, 
+						(SELECT OPCValuesTags.TagValue
+						FROM OPCValuesTags
+						WHERE (((OPCValuesTags.TagID)=7) AND ((OPCValuesTags.TagTimeStamp)=datevalue('%dateFrom%')) AND ((OPCValuesTags.Quality)=192))) AS steam_rec1_ini, 
+						(SELECT OPCValuesTags.TagValue
+						FROM OPCValuesTags
+						WHERE (((OPCValuesTags.TagID)=7) AND ((OPCValuesTags.TagTimeStamp)=datevalue('%dateTo%')) AND ((OPCValuesTags.Quality)=192))) AS steam_rec1_end, 
+						(steam_rec1_end-steam_rec1_ini) AS steam_rec1_dif, 
+						(SELECT OPCValuesTags.TagValue
+						FROM OPCValuesTags
+						WHERE (((OPCValuesTags.TagID)=8) AND ((OPCValuesTags.TagTimeStamp)=datevalue('%dateFrom%')) AND ((OPCValuesTags.Quality)=192))) AS steam_rec3_ini, 
+						(SELECT OPCValuesTags.TagValue
+						FROM OPCValuesTags
+						WHERE (((OPCValuesTags.TagID)=8) AND ((OPCValuesTags.TagTimeStamp)=datevalue('%dateTo%')) AND ((OPCValuesTags.Quality)=192))) AS steam_rec3_end, 
+						(steam_rec3_end-steam_rec3_ini) AS steam_rec3_dif 
+				FROM OPCValuesTags AS OPCValuesTagsFine
+				WHERE (((OPCValuesTagsFine.Quality)=192) AND ((OPCValuesTagsFine.TagID)=4) AND ((OPCValuesTagsFine.TagTimeStamp)=datevalue('%dateTo%')))
+	</sql_command>
+	<stylesheet_list>
+		<stylesheet>
+			<path>../StyleSheets/html_consumi.xsl</path>
+		</stylesheet>
+		<stylesheet>
+			<path>../StyleSheets/xls_conc_yesterday.xsl</path>
+		</stylesheet>
+	</stylesheet_list>
+	<parameter_list>
+		<parameter>
+			<name>dateFrom</name>
+			<description>Data inizio(yyyy-mm-dd):</description>
+			<default_value>SELECT datevalue(now()-1) as dateFrom</default_value>
+		</parameter>
+		<parameter>
+			<name>dateTo</name>
+			<description>Data fine(yyyy-mm-dd):</description>
+			<default_value>SELECT datevalue(now()) as dateFrom</default_value>
+		</parameter>
+	</parameter_list>
+</report_definition>

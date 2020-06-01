@@ -1,0 +1,10 @@
+FormReportList = 121, 21, 708, 478, , 22, 38, 533, 496, C
+ReportManager = 178, 205, 620, 662, 
+Parameter = 553, 248, 995, 705, 
+ReportDefinition = 619, 93, 1311, 550, 
+ParameterManager = 133, 133, 575, 590, 
+FormParameterValueFill = 23, 23, 444, 480, , 0, 0, 423, 448, C
+ReportMain = 177, 177, 598, 634, 
+frmLogsTo = 72, 63, 720, 684, , 24, 120, 674, 732, C
+modRegistry = 67, 67, 610, 558, Z
+FormPassword = 221, 221, 872, 700, , 198, 198, 851, 668, C

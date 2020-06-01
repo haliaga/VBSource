@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="datalog_report.xsl"?>
+<report_definition xmlns:dt="urn:schemas-microsoft-com:datatypes" xml:space="preserve">
+	<name>Concentrazione media oraria Adsorbitore AS-140:RC-104</name>
+	<description>Concentrazione media oraria Adsorbitore AS-140</description>
+	<sql_command>SELECT format (DateValue([TagTimeStamp])+(Hour([TagTimeStamp])/24),"dd-mm-yyyy HH:MM")  AS Data, Format(Avg(OPCValuesTags.TagValue),"0.00") AS AvgOfTagValue
+		FROM OPCValuesTags
+		WHERE (((OPCValuesTags.Quality)=192) AND ((OPCValuesTags.TagTimeStamp)>=datevalue('%date_from%') And (OPCValuesTags.TagTimeStamp)&lt; datevalue('%date_to%')+1))
+		GROUP BY DateValue([TagTimeStamp]), Hour([TagTimeStamp]), OPCValuesTags.TagID
+		HAVING (((OPCValuesTags.TagID)=43))
+	</sql_command>
+	<stylesheet_list>
+		<stylesheet>
+			<path>../StyleSheets/html_conc_rc104_ads_d.xsl</path>
+		</stylesheet>
+		<stylesheet>
+			<path>../StyleSheets/xls_conc_yesterday.xsl</path>
+		</stylesheet>
+	</stylesheet_list>
+	<parameter_list>
+		<parameter>
+			<name>date_from</name>
+			<description>Data inizio(yyyy-mm-dd):</description>
+			<default_value>SELECT datevalue(now()-1) as dateFrom</default_value>
+		</parameter>
+		<parameter>
+			<name>date_to</name>
+			<description>Data fine(yyyy-mm-dd):</description>
+			<default_value>SELECT datevalue(now()) as dateFrom</default_value>
+		</parameter>
+	</parameter_list>
+</report_definition>

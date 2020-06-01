@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="datalog_report.xsl"?>
+<report_definition xmlns:dt="urn:schemas-microsoft-com:datatypes" xml:space="preserve">
+	<name>Conteggio</name>
+	<description>Temp Skymark</description>
+	<sql_command>
+        SELECT COUNT (*) AS conteggio
+        from soglie
+WHERE (DateValue(soglie.DATA)) BETWEEN DateValue("%date_from%") AND DateValue("%date_to%");
+</sql_command>
+	<stylesheet_list>
+		<stylesheet> 
+			<path>../StyleSheets/html_allarmi_analisi_1.xsl</path> 
+		</stylesheet> 
+	</stylesheet_list>
+        <parameter_list>
+		<parameter>
+			<name>date_from</name>
+			<description>Starting Date:</description>
+			<default_value>SELECT datevalue(now()-30) as dateFrom</default_value>
+		</parameter>
+		<parameter>
+			<name>date_to</name>
+			<description>Ending Date:</description>
+			<default_value>SELECT datevalue(now()) as dateTo</default_value>
+		</parameter>	
+	</parameter_list>
+</report_definition>
